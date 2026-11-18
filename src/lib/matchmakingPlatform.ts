@@ -11,6 +11,7 @@ import {
 import { PlayerMaxHeap } from "./priorityQueue";
 import { buildCompatibilityNetwork, extractCompatibleLobbySubgraph } from "./graphEngine";
 import { executeGreedyPartition } from "./greedyBalancing";
+import { assignServerUsingDijkstra, OptimalServerDijkstraResult } from "./dijkstraRouting";
 
 export function getDefaultServers(): EdgeServer[] {
   return [
@@ -78,50 +79,13 @@ export function calculateMQS(match: {
 }
 
 /**
- * Assigns nearest edge server using regional Dijkstra latency optimization
+ * Assigns nearest edge server using Dijkstra's Shortest Path Algorithm on the Network Backbone Graph
  */
 export function assignOptimalServer(
   players: Player[],
   servers: EdgeServer[]
-): { server: EdgeServer; latencyMs: number } {
-  const regionCounts: Record<Region, number> = { India: 0, Asia: 0, EU: 0, NA: 0 };
-  players.forEach((p) => regionCounts[p.region]++);
-
-  let dominantRegion: Region = "India";
-  let maxCount = -1;
-  (Object.keys(regionCounts) as Region[]).forEach((r) => {
-    if (regionCounts[r] > maxCount) {
-      maxCount = regionCounts[r];
-      dominantRegion = r;
-    }
-  });
-
-  const available = servers.filter((s) => s.currentLoad < s.capacity);
-  const pool = available.length > 0 ? available : servers;
-
-  let bestServer = pool[0];
-  let minCost = Infinity;
-
-  for (const s of pool) {
-    let penalty = 0;
-    if (s.region !== dominantRegion) {
-      const isNeighbor =
-        ((s.region as string) === "India" && (dominantRegion as string) === "Asia") ||
-        ((s.region as string) === "Asia" && (dominantRegion as string) === "India");
-      penalty = isNeighbor ? 30 : 80;
-    }
-    const cost = s.baseLatencyMs + s.currentLoad * 3 + penalty;
-    if (cost < minCost) {
-      minCost = cost;
-      bestServer = s;
-    }
-  }
-
-  bestServer.currentLoad++;
-  const avgPlayerPing = players.reduce((a, b) => a + b.ping, 0) / players.length;
-  const latencyMs = Math.round(minCost + avgPlayerPing * 0.35);
-
-  return { server: bestServer, latencyMs };
+): OptimalServerDijkstraResult {
+  return assignServerUsingDijkstra(players, servers);
 }
 
 /**
@@ -190,6 +154,7 @@ export function createSingleMatch(
     matchedAt: Date.now(),
     algorithmStrategy: strategy,
     executionTimeMs: Math.round((t1 - t0) * 100) / 100,
+    dijkstraTrace: serverRes.dijkstraTrace,
   };
 
   return { match, remainingPool };

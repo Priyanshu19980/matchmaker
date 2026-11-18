@@ -1,5 +1,5 @@
 import React from "react";
-import { BookOpenIcon, AwardIcon, ShieldIcon, ActivityIcon, CheckCircleIcon } from "./Icons";
+import { BookOpenIcon, AwardIcon, ShieldIcon, ActivityIcon, CheckCircleIcon, DownloadIcon } from "./Icons";
 
 export const AcademicAdaDoc: React.FC = () => {
   return (
@@ -25,6 +25,16 @@ export const AcademicAdaDoc: React.FC = () => {
             <p className="text-xs text-slate-400 font-mono">
               Fair & Fast Multiplayer Game Matchmaking & Team Balancing Engine
             </p>
+            <div className="pt-2">
+              <a
+                href="/MULTI-MATCH_Project_Brief.pdf"
+                download="MULTI-MATCH_Project_Brief.pdf"
+                className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-orange-600 hover:bg-orange-500 text-white font-mono text-xs font-bold transition-all shadow-md shadow-orange-600/30"
+              >
+                <DownloadIcon size={13} />
+                <span>Download Printable Project Brief (PDF)</span>
+              </a>
+            </div>
           </div>
         </div>
 

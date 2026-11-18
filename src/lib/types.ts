@@ -92,6 +92,12 @@ export interface MatchmakingMatch {
   matchedAt: number;
   algorithmStrategy: "proposed_greedy_graph" | "pure_random" | "skill_only_greedy";
   executionTimeMs: number;
+  dijkstraTrace?: {
+    dominantGateway: string;
+    shortestPathHops: string[];
+    pathLatencyMs: number;
+    playerCountPerRegion: Record<Region, number>;
+  };
 }
 
 export interface GreedyStepTrace {

@@ -64,13 +64,13 @@ export const MatchmakingHub: React.FC<MatchmakingHubProps> = ({
             <button
               onClick={onGenerateNextMatch}
               disabled={isGenerating}
-              className={`w-full sm:w-auto px-6 py-3.5 rounded-2xl bg-gradient-to-r from-cyan-500 via-sky-500 to-indigo-600 hover:from-cyan-400 hover:to-indigo-500 text-slate-950 font-black text-sm uppercase tracking-wider transition-all shadow-xl shadow-cyan-500/25 flex items-center justify-center gap-2 ${
-                isGenerating ? "opacity-75 cursor-wait" : "hover:scale-[1.02] active:scale-[0.98]"
+              className={`w-full sm:w-auto px-7 py-3.5 rounded-full bg-gradient-to-r from-[#00c6ff] via-[#0072ff] to-[#5433ff] hover:from-[#00d8ff] hover:to-[#6a42ff] text-white font-black text-sm uppercase tracking-wider transition-all shadow-[0_0_30px_rgba(0,114,255,0.45)] hover:shadow-[0_0_45px_rgba(0,114,255,0.7)] flex items-center justify-center gap-2.5 ${
+                isGenerating ? "opacity-75 cursor-wait" : "hover:scale-[1.03] active:scale-[0.98]"
               }`}
             >
               <RefreshIcon size={16} className={isGenerating ? "animate-spin" : ""} />
               <span>{isGenerating ? "FORMING MATCH..." : `FORM NEXT ${mode} MATCH`}</span>
-              <span className="px-2 py-0.5 rounded-full bg-slate-950/30 text-slate-950 text-xs font-mono font-bold">
+              <span className="px-2 py-0.5 rounded-full bg-black/30 text-white text-xs font-mono font-bold">
                 ({queueCount})
               </span>
             </button>
@@ -239,6 +239,30 @@ export const MatchmakingHub: React.FC<MatchmakingHubProps> = ({
                 );
               })}
             </div>
+
+            {/* Dijkstra Algorithmic Shortest Path Trace */}
+            {currentMatch.dijkstraTrace && (
+              <div className="mt-3 pt-3 border-t border-slate-800/80 flex flex-wrap items-center justify-between gap-3 text-xs font-mono">
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className="text-[10px] uppercase font-bold text-indigo-400">
+                    Dijkstra Shortest Path:
+                  </span>
+                  <div className="inline-flex flex-wrap items-center gap-1.5 px-2.5 py-1 rounded-lg bg-indigo-950/60 border border-indigo-800/60 text-indigo-200">
+                    {currentMatch.dijkstraTrace.shortestPathHops.map((hop, i) => (
+                      <React.Fragment key={hop}>
+                        <span className="font-bold text-cyan-300">{hop}</span>
+                        {i < currentMatch.dijkstraTrace!.shortestPathHops.length - 1 && (
+                          <span className="text-slate-500 font-bold">→</span>
+                        )}
+                      </React.Fragment>
+                    ))}
+                  </div>
+                </div>
+                <div className="text-[11px] text-slate-400">
+                  Network Transit Latency: <strong className="text-emerald-400">{currentMatch.dijkstraTrace.pathLatencyMs}ms</strong>
+                </div>
+              </div>
+            )}
           </div>
         </>
       ) : (

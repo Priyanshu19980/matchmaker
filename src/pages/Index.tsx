@@ -14,21 +14,26 @@ import { GraphCompatibilityLab } from "../components/algorithms/GraphCompatibili
 import { SortingLab } from "../components/algorithms/SortingLab";
 import { StrategyComparisonLab } from "../components/algorithms/StrategyComparisonLab";
 import { AcademicAdaDoc } from "../components/AcademicAdaDoc";
+import { LandingPage } from "../components/landing/LandingPage";
+import { DijkstraLab } from "../components/algorithms/DijkstraLab";
 
 const VIEW_TITLES: Record<ActiveView, string> = {
+  landing: "Landing Home Portal",
   hub: "Live Matchmaking Engine",
   batch: "Batch Multi-Match Platform",
   players: "Player Queue & Datasets Manager",
-  greedy: "Greedy Balancer Lab (Stage 3)",
   priority: "Priority Queue & Heap Lab (Stage 1)",
   graph: "Graph Compatibility Lab (Stage 2)",
+  greedy: "Greedy Balancer Lab (Stage 3)",
+  dijkstra: "Dijkstra Routing Lab (Stage 4)",
   sorting: "Sorting Algorithms Benchmark",
   compare: "Strategy Comparison & Benchmarks",
   docs: "Engine Architecture & Algorithmic Specs",
 };
 
 export default function Index() {
-  const [activeView, setActiveView] = useState<ActiveView>("hub");
+  // User is ALWAYS redirected to landing page first
+  const [activeView, setActiveView] = useState<ActiveView>("landing");
   const [mode, setMode] = useState<GameMode>("4v4");
   const [players, setPlayers] = useState<Player[]>(() => getDUCollegiateDataset());
   const [activeQueue, setActiveQueue] = useState<Player[]>(() => getDUCollegiateDataset());
@@ -38,7 +43,33 @@ export default function Index() {
   const [isGenerating, setIsGenerating] = useState(false);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 
-  // Initialize initial match on mount
+  // Synchronize hash routing; default ALWAYS to landing page on root or fresh visit
+  useEffect(() => {
+    const syncRouteFromHash = () => {
+      const hash = window.location.hash.replace("#/", "").replace("#", "").trim();
+      if (hash && hash in VIEW_TITLES) {
+        setActiveView(hash as ActiveView);
+      } else {
+        setActiveView("landing");
+      }
+    };
+
+    syncRouteFromHash();
+    window.addEventListener("hashchange", syncRouteFromHash);
+    return () => window.removeEventListener("hashchange", syncRouteFromHash);
+  }, []);
+
+  const navigateTo = (view: ActiveView) => {
+    setActiveView(view);
+    if (view === "landing") {
+      window.location.hash = "#/";
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    } else {
+      window.location.hash = `#/${view}`;
+    }
+  };
+
+  // Initialize initial match on mount for the engine
   useEffect(() => {
     try {
       const freshServers = getDefaultServers();
@@ -168,12 +199,27 @@ export default function Index() {
     }
   };
 
+  // =========================================================================
+  // 1. SEPARATE LANDING PAGE (NO SIDEBAR - EXACT REPLICA OF THE IMAGE)
+  // =========================================================================
+  if (activeView === "landing") {
+    return (
+      <LandingPage
+        onLaunchEngine={() => navigateTo("hub")}
+        queueCount={activeQueue.length}
+      />
+    );
+  }
+
+  // =========================================================================
+  // 2. MATCHMAKING PLATFORM / WORKSPACE (LEFT SIDEBAR DISPLAYED AFTER LANDING)
+  // =========================================================================
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col md:flex-row font-sans selection:bg-cyan-500/30 selection:text-cyan-200">
-      {/* Platform Sidebar */}
+    <div className="min-h-screen bg-[#0c0f15] text-slate-100 flex flex-col md:flex-row font-sans selection:bg-[#00f0d2]/30 selection:text-[#00f0d2]">
+      {/* Platform Left Sidebar - ONLY displayed after leaving Landing Page */}
       <AppSidebar
         activeView={activeView}
-        onSelectView={(v) => setActiveView(v)}
+        onSelectView={(v) => navigateTo(v)}
         queueCount={activeQueue.length}
       />
 
@@ -185,6 +231,7 @@ export default function Index() {
           queueSize={activeQueue.length}
           onSimulateTick={handleSimulateTick}
           activeViewTitle={VIEW_TITLES[activeView]}
+          onOpenLanding={() => navigateTo("landing")}
         />
 
         <main className="p-4 sm:p-6 lg:p-8 flex-1 max-w-7xl w-full mx-auto">
@@ -241,6 +288,8 @@ export default function Index() {
               players={activeQueue.length >= 8 ? activeQueue : players}
             />
           )}
+
+          {activeView === "dijkstra" && <DijkstraLab />}
 
           {activeView === "sorting" && (
             <SortingLab players={players} />

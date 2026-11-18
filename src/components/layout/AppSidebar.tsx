@@ -9,15 +9,19 @@ import {
   BookOpenIcon,
   UsersIcon,
   ServerIcon,
+  HomeIcon,
 } from "../Icons";
+import { ReachLogo } from "../common/ReachLogo";
 
 export type ActiveView =
+  | "landing"
   | "hub"
   | "batch"
   | "players"
   | "greedy"
   | "priority"
   | "graph"
+  | "dijkstra"
   | "sorting"
   | "compare"
   | "docs";
@@ -48,19 +52,26 @@ export const AppSidebar: React.FC<AppSidebarProps> = ({
 }) => {
   const navSections: NavSection[] = [
     {
+      heading: "PORTAL & LEADERBOARDS",
+      items: [
+        { id: "landing", label: "Reach Portal & Leaderboards", icon: HomeIcon, badge: "PORTAL" },
+      ],
+    },
+    {
       heading: "MATCHMAKING PLATFORM",
       items: [
         { id: "hub", label: "Match Engine & Queue", icon: GamepadIcon, badge: "LIVE" },
         { id: "batch", label: "Batch Multi-Match", icon: LayersIcon, badge: `${Math.floor(queueCount / 8)} Ready` },
-        { id: "players", label: "Player Datasets", icon: UsersIcon, badge: `${queueCount}` },
+        { id: "players", label: "Player Pool & Datasets", icon: UsersIcon, badge: `${queueCount}` },
       ],
     },
     {
       heading: "ALGORITHM LABS",
       items: [
-        { id: "greedy", label: "Greedy Balancer Lab", icon: ZapIcon, sub: "Stage 3" },
         { id: "priority", label: "Priority Queue (Heap)", icon: ActivityIcon, sub: "Stage 1" },
         { id: "graph", label: "Graph Compatibility Lab", icon: ShieldIcon, sub: "Stage 2" },
+        { id: "greedy", label: "Greedy Balancer Lab", icon: ZapIcon, sub: "Stage 3" },
+        { id: "dijkstra", label: "Dijkstra Routing Lab", icon: ServerIcon, sub: "Stage 4" },
         { id: "sorting", label: "Sorting Benchmark Lab", icon: ServerIcon, sub: "Bench" },
         { id: "compare", label: "Strategy Comparison", icon: AwardIcon, sub: "Benchmark" },
       ],
@@ -68,28 +79,25 @@ export const AppSidebar: React.FC<AppSidebarProps> = ({
     {
       heading: "SPECIFICATIONS",
       items: [
-        { id: "docs", label: "Engine Architecture", icon: BookOpenIcon, sub: "Docs & Proofs" },
+        { id: "docs", label: "Engine Architecture & Specs", icon: BookOpenIcon, sub: "Proofs" },
       ],
     },
   ];
 
   return (
-    <aside className="w-64 bg-slate-950 border-r border-slate-800 flex flex-col justify-between shrink-0 h-screen sticky top-0 overflow-y-auto">
+    <aside className="w-64 bg-[#0c0f15] border-r border-[#1b2230] flex flex-col justify-between shrink-0 h-screen sticky top-0 overflow-y-auto font-mono text-xs select-none">
       <div>
-        {/* Brand Header with Uploaded Logo */}
-        <div className="p-4 border-b border-slate-800/80 bg-slate-900/40">
+        {/* Brand Header with Dual-Triangle Reach Logo */}
+        <div className="p-4 border-b border-[#1b2230] bg-[#090c12]/80">
           <div className="flex items-center gap-3">
-            <img
-              src="/logo.jpg"
-              alt="MULTI-MATCH Logo"
-              className="w-12 h-12 rounded-xl object-cover border border-cyan-500/40 shadow-lg shadow-cyan-500/20"
-            />
+            <ReachLogo size={32} />
             <div>
-              <h1 className="font-black text-white text-base tracking-wider flex items-center gap-1.5">
-                MULTI-MATCH
+              <h1 className="font-black text-white text-sm tracking-wider flex items-center">
+                <span>MULTI-</span>
+                <span className="text-[#ff2a6d]">MATCH</span>
               </h1>
-              <p className="text-[10px] text-cyan-400 font-mono font-semibold uppercase tracking-tight">
-                Fair & Fast Engine
+              <p className="text-[10px] text-[#00f0d2] font-semibold uppercase tracking-tight">
+                ESPORTS ENGINE
               </p>
             </div>
           </div>
@@ -99,7 +107,7 @@ export const AppSidebar: React.FC<AppSidebarProps> = ({
         <div className="p-3 space-y-5">
           {navSections.map((section) => (
             <div key={section.heading} className="space-y-1">
-              <div className="px-2 text-[10px] font-mono uppercase tracking-wider text-slate-500 font-bold">
+              <div className="px-2 text-[10px] uppercase tracking-wider text-slate-500 font-bold">
                 {section.heading}
               </div>
               <div className="space-y-0.5">
@@ -110,23 +118,36 @@ export const AppSidebar: React.FC<AppSidebarProps> = ({
                     <button
                       key={item.id}
                       onClick={() => onSelectView(item.id as ActiveView)}
-                      className={`w-full flex items-center justify-between px-2.5 py-2 rounded-xl text-xs font-medium transition-all text-left ${
+                      className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-medium transition-all text-left relative overflow-hidden group ${
                         isActive
-                          ? "bg-cyan-950/60 text-cyan-300 border border-cyan-500/40 shadow-sm shadow-cyan-500/10 font-semibold"
-                          : "text-slate-400 hover:text-slate-200 hover:bg-slate-900/60 border border-transparent"
+                          ? "bg-[#00f0d2]/10 text-white border-l-2 border-[#00f0d2] font-bold shadow-[inset_0_0_15px_rgba(0,240,210,0.08)]"
+                          : "text-slate-400 hover:text-white hover:bg-[#121620] border-l-2 border-transparent"
                       }`}
                     >
                       <div className="flex items-center gap-2.5 truncate">
-                        <Icon size={15} className={isActive ? "text-cyan-400" : "text-slate-500"} />
+                        <Icon
+                          size={15}
+                          className={
+                            isActive
+                              ? "text-[#00f0d2] drop-shadow-[0_0_6px_#00f0d2]"
+                              : "text-slate-500 group-hover:text-slate-300"
+                          }
+                        />
                         <span className="truncate">{item.label}</span>
                       </div>
                       {item.badge && (
-                        <span className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-slate-800 text-slate-300 border border-slate-700">
+                        <span
+                          className={`text-[9px] px-2 py-0.5 rounded-full font-bold ${
+                            isActive
+                              ? "bg-[#00f0d2] text-[#0c0f15] font-black"
+                              : "bg-[#181f2c] text-slate-300 border border-[#1f2737]"
+                          }`}
+                        >
                           {item.badge}
                         </span>
                       )}
-                      {item.sub && (
-                        <span className="text-[9px] font-mono text-slate-500 hidden sm:inline">
+                      {item.sub && !item.badge && (
+                        <span className="text-[9px] text-slate-500">
                           {item.sub}
                         </span>
                       )}
@@ -139,21 +160,18 @@ export const AppSidebar: React.FC<AppSidebarProps> = ({
         </div>
       </div>
 
-      {/* Modern Platform Footer */}
-      <div className="p-3.5 border-t border-slate-800/80 bg-slate-900/40 text-[11px] space-y-1.5">
+      {/* Platform Footer */}
+      <div className="p-3.5 border-t border-[#1b2230] bg-[#090c12]/90 text-[11px] space-y-1">
         <div className="flex items-center justify-between">
-          <span className="text-[10px] font-mono uppercase text-cyan-400 font-bold tracking-wider">
-            MULTI-MATCH v2.4
+          <span className="text-[10px] uppercase text-[#00f0d2] font-bold tracking-wider">
+            REACH ENGINE v2.5
           </span>
-          <span className="text-[9px] font-mono px-1.5 py-0.2 rounded bg-emerald-950 text-emerald-300 border border-emerald-800">
-            STABLE
+          <span className="text-[9px] px-1.5 py-0.2 rounded bg-emerald-950 text-emerald-300 border border-emerald-800 font-bold">
+            ONLINE
           </span>
         </div>
-        <div className="text-slate-300 font-medium text-xs">
+        <div className="text-slate-400 text-xs">
           4-Stage Algorithmic Engine
-        </div>
-        <div className="text-slate-500 text-[10px] font-mono">
-          Greedy • Heap • Graph • Dijkstra
         </div>
       </div>
     </aside>
