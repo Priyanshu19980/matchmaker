@@ -27,7 +27,7 @@ export const SortingLab: React.FC<SortingLabProps> = ({ players }) => {
         <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4 pb-4 border-b border-slate-800">
           <div>
             <span className="text-[10px] font-mono uppercase tracking-widest text-cyan-400 font-bold block">
-              ADA Synopsis • Section 5.D
+              Sorting Algorithms Benchmark
             </span>
             <h2 className="text-xl sm:text-2xl font-black text-white tracking-tight uppercase">
               Sorting Algorithms Empirical Laboratory

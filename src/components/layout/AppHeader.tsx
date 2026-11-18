@@ -25,7 +25,7 @@ export const AppHeader: React.FC<AppHeaderProps> = ({
           {activeViewTitle}
         </h2>
         <span className="hidden md:inline-flex items-center gap-1 text-[10px] font-mono uppercase px-2 py-0.5 rounded-full bg-cyan-950 text-cyan-300 border border-cyan-800/60 font-semibold">
-          <ActivityIcon size={11} /> Faculty of Technology, DU
+          <ActivityIcon size={11} /> 4-Stage Engine • Fair & Fast
         </span>
       </div>
 

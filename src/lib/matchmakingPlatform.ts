@@ -14,7 +14,7 @@ import { executeGreedyPartition } from "./greedyBalancing";
 
 export function getDefaultServers(): EdgeServer[] {
   return [
-    { id: 1, name: "Delhi-FT-1 (Campus Edge)", region: "India", capacity: 6, currentLoad: 0, baseLatencyMs: 14 },
+    { id: 1, name: "Delhi Central (Edge-01)", region: "India", capacity: 6, currentLoad: 0, baseLatencyMs: 14 },
     { id: 2, name: "Mumbai-1 (AWS Central)", region: "India", capacity: 8, currentLoad: 0, baseLatencyMs: 22 },
     { id: 3, name: "Singapore-1 (Asia-SE)", region: "Asia", capacity: 6, currentLoad: 0, baseLatencyMs: 36 },
     { id: 4, name: "Frankfurt-1 (EU-Central)", region: "EU", capacity: 6, currentLoad: 0, baseLatencyMs: 44 },

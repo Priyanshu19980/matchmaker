@@ -8,20 +8,26 @@ interface MatchmakingHubProps {
   currentMatch: MatchmakingMatch | null;
   matchHistory: MatchmakingMatch[];
   onGenerateNextMatch: () => void;
+  onResetQueue: () => void;
   onClearHistory: () => void;
   mode: GameMode;
   servers: EdgeServer[];
   queueCount: number;
+  isGenerating?: boolean;
+  toastMessage?: string | null;
 }
 
 export const MatchmakingHub: React.FC<MatchmakingHubProps> = ({
   currentMatch,
   matchHistory,
   onGenerateNextMatch,
+  onResetQueue,
   onClearHistory,
   mode,
   servers,
   queueCount,
+  isGenerating = false,
+  toastMessage = null,
 }) => {
   const exportMatchJson = () => {
     if (!currentMatch) return;
@@ -40,7 +46,7 @@ export const MatchmakingHub: React.FC<MatchmakingHubProps> = ({
           <div className="space-y-2 max-w-2xl">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-950/80 border border-cyan-500/50 text-cyan-300 text-xs font-mono font-semibold">
               <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
-              MATCHMAKING ENGINE READY • FACULTY OF TECHNOLOGY, DU
+              MATCHMAKING ENGINE READY • MULTI-MATCH PLATFORM
             </div>
             <h1 className="text-2xl sm:text-3xl font-black text-white tracking-tight uppercase">
               Automated Team Balancing Engine
@@ -57,10 +63,24 @@ export const MatchmakingHub: React.FC<MatchmakingHubProps> = ({
           <div className="flex flex-col sm:flex-row items-center gap-3 w-full lg:w-auto">
             <button
               onClick={onGenerateNextMatch}
-              className="w-full sm:w-auto px-6 py-3.5 rounded-2xl bg-gradient-to-r from-cyan-500 via-sky-500 to-indigo-600 hover:from-cyan-400 hover:to-indigo-500 text-slate-950 font-black text-sm uppercase tracking-wider transition-all shadow-xl shadow-cyan-500/25 hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-2"
+              disabled={isGenerating}
+              className={`w-full sm:w-auto px-6 py-3.5 rounded-2xl bg-gradient-to-r from-cyan-500 via-sky-500 to-indigo-600 hover:from-cyan-400 hover:to-indigo-500 text-slate-950 font-black text-sm uppercase tracking-wider transition-all shadow-xl shadow-cyan-500/25 flex items-center justify-center gap-2 ${
+                isGenerating ? "opacity-75 cursor-wait" : "hover:scale-[1.02] active:scale-[0.98]"
+              }`}
             >
-              <RefreshIcon size={16} />
-              FORM NEXT {mode} MATCH
+              <RefreshIcon size={16} className={isGenerating ? "animate-spin" : ""} />
+              <span>{isGenerating ? "FORMING MATCH..." : `FORM NEXT ${mode} MATCH`}</span>
+              <span className="px-2 py-0.5 rounded-full bg-slate-950/30 text-slate-950 text-xs font-mono font-bold">
+                ({queueCount})
+              </span>
+            </button>
+
+            <button
+              onClick={onResetQueue}
+              className="w-full sm:w-auto px-4 py-3.5 rounded-2xl bg-slate-900/90 hover:bg-slate-800 text-slate-300 border border-slate-700/80 text-xs font-mono font-bold transition-all flex items-center justify-center gap-1.5 hover:text-white"
+              title="Replenish or Reset Waiting Queue to Full Capacity"
+            >
+              <RefreshIcon size={14} /> Refill Queue
             </button>
 
             {currentMatch && (
@@ -75,6 +95,19 @@ export const MatchmakingHub: React.FC<MatchmakingHubProps> = ({
           </div>
         </div>
       </div>
+
+      {/* Live Status Toast Banner */}
+      {toastMessage && (
+        <div className="bg-cyan-950/80 border border-cyan-500/40 text-cyan-200 px-5 py-3 rounded-2xl flex flex-wrap items-center justify-between gap-3 text-xs font-mono shadow-lg transition-all animate-in fade-in slide-in-from-top-2 duration-200">
+          <span className="flex items-center gap-2.5">
+            <span className="w-2 h-2 rounded-full bg-cyan-400 animate-ping" />
+            <span className="font-semibold">{toastMessage}</span>
+          </span>
+          <span className="text-slate-400 text-[11px] bg-slate-900 px-2.5 py-1 rounded-lg border border-slate-800">
+            Queue Waiting: <strong className="text-emerald-400">{queueCount}</strong>
+          </span>
+        </div>
+      )}
 
       {currentMatch ? (
         <>

@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { Player, GameMode, EdgeServer, MatchmakingMatch } from "../lib/types";
-import { getDUCollegiateDataset } from "../lib/datasets";
+import { Player, GameMode, EdgeServer, MatchmakingMatch, PLAYERS_PER_TEAM } from "../lib/types";
+import { getDUCollegiateDataset, generateFreshQueue } from "../lib/datasets";
 import { getDefaultServers, createSingleMatch } from "../lib/matchmakingPlatform";
+import { playMatchFoundSound } from "../lib/soundEffects";
 import { AppSidebar, ActiveView } from "../components/layout/AppSidebar";
 import { AppHeader } from "../components/layout/AppHeader";
 import { MatchmakingHub } from "../components/platform/MatchmakingHub";
@@ -18,51 +19,153 @@ const VIEW_TITLES: Record<ActiveView, string> = {
   hub: "Live Matchmaking Engine",
   batch: "Batch Multi-Match Platform",
   players: "Player Queue & Datasets Manager",
-  greedy: "Greedy Balancer Lab (Section 5.A)",
-  priority: "Priority Queue & Heap Lab (Section 5.B)",
-  graph: "Graph Compatibility Lab (Section 5.C)",
-  sorting: "Sorting Algorithms Benchmark (Section 5.D)",
-  compare: "Strategy Comparison & Benchmarks (Section 8)",
-  docs: "ADA Project Synopsis & Viva Documentation",
+  greedy: "Greedy Balancer Lab (Stage 3)",
+  priority: "Priority Queue & Heap Lab (Stage 1)",
+  graph: "Graph Compatibility Lab (Stage 2)",
+  sorting: "Sorting Algorithms Benchmark",
+  compare: "Strategy Comparison & Benchmarks",
+  docs: "Engine Architecture & Algorithmic Specs",
 };
 
 export default function Index() {
   const [activeView, setActiveView] = useState<ActiveView>("hub");
   const [mode, setMode] = useState<GameMode>("4v4");
   const [players, setPlayers] = useState<Player[]>(() => getDUCollegiateDataset());
+  const [activeQueue, setActiveQueue] = useState<Player[]>(() => getDUCollegiateDataset());
   const [servers, setServers] = useState<EdgeServer[]>(() => getDefaultServers());
   const [currentMatch, setCurrentMatch] = useState<MatchmakingMatch | null>(null);
   const [matchHistory, setMatchHistory] = useState<MatchmakingMatch[]>([]);
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
 
-  // Generate initial match
-  const generateMatch = (pool = players, currentMode = mode) => {
+  // Initialize initial match on mount
+  useEffect(() => {
     try {
       const freshServers = getDefaultServers();
-      const res = createSingleMatch(pool, currentMode, freshServers, "proposed_greedy_graph");
+      const res = createSingleMatch(activeQueue, mode, freshServers, "proposed_greedy_graph");
       setCurrentMatch(res.match);
-      setMatchHistory((prev) => [res.match, ...prev.slice(0, 9)]);
+      setMatchHistory([res.match]);
+      setActiveQueue(res.remainingPool);
       setServers(freshServers);
     } catch (e) {
-      console.error("Match error:", e);
+      console.error("Initial match creation error:", e);
+    }
+  }, []);
+
+  // Handle forming the next match sequentially from active queue
+  const handleGenerateNextMatch = () => {
+    setIsGenerating(true);
+    try {
+      const teamSize = PLAYERS_PER_TEAM[mode];
+      const requiredLobby = teamSize * 2;
+      let currentQueue = [...activeQueue];
+      let didReplenish = false;
+
+      // If active queue has fewer players than required for this mode, auto-replenish!
+      if (currentQueue.length < requiredLobby) {
+        const freshArrivals = generateFreshQueue(32, mode);
+        currentQueue = [...currentQueue, ...freshArrivals];
+        didReplenish = true;
+      }
+
+      const freshServers = getDefaultServers();
+      const res = createSingleMatch(currentQueue, mode, freshServers, "proposed_greedy_graph");
+
+      setCurrentMatch(res.match);
+      setMatchHistory((prev) => [res.match, ...prev.slice(0, 19)]);
+      setActiveQueue(res.remainingPool);
+      setServers(freshServers);
+
+      if (didReplenish) {
+        setToastMessage(`⚡ Queue replenished with 32 fresh waiting candidates! Formed ${res.match.id} (${res.remainingPool.length} waiting)`);
+      } else {
+        setToastMessage(`✅ Formed ${mode} Match ${res.match.id} (Δ ${res.match.ratingDelta} MMR) • Remaining Queue: ${res.remainingPool.length}`);
+      }
+
+      playMatchFoundSound();
+    } catch (e) {
+      console.error("Match creation error:", e);
+      // Fallback safety refill
+      const fresh = generateFreshQueue(32, mode);
+      const res = createSingleMatch(fresh, mode, getDefaultServers(), "proposed_greedy_graph");
+      setCurrentMatch(res.match);
+      setActiveQueue(res.remainingPool);
+    } finally {
+      setTimeout(() => {
+        setIsGenerating(false);
+      }, 250);
     }
   };
 
-  useEffect(() => {
-    generateMatch(players, mode);
-  }, [mode]);
+  // Reset or refill the active queue
+  const handleResetQueue = () => {
+    const refreshed = players.length >= PLAYERS_PER_TEAM[mode] * 2 ? [...players] : generateFreshQueue(32, mode);
+    setActiveQueue(refreshed);
+    setToastMessage(`🔄 Queue replenished to ${refreshed.length} active players.`);
+    try {
+      const freshServers = getDefaultServers();
+      const res = createSingleMatch(refreshed, mode, freshServers, "proposed_greedy_graph");
+      setCurrentMatch(res.match);
+      setActiveQueue(res.remainingPool);
+      setServers(freshServers);
+    } catch (e) {
+      console.error(e);
+    }
+  };
 
+  // Switch Game Mode (2v2, 3v3, 4v4, 5v5)
+  const handleModeChange = (newMode: GameMode) => {
+    setMode(newMode);
+    const required = PLAYERS_PER_TEAM[newMode] * 2;
+    let pool = activeQueue.length >= required ? [...activeQueue] : [...players];
+    if (pool.length < required) {
+      pool = generateFreshQueue(32, newMode);
+    }
+
+    try {
+      const freshServers = getDefaultServers();
+      const res = createSingleMatch(pool, newMode, freshServers, "proposed_greedy_graph");
+      setCurrentMatch(res.match);
+      setMatchHistory((prev) => [res.match, ...prev.slice(0, 19)]);
+      setActiveQueue(res.remainingPool);
+      setServers(freshServers);
+      setToastMessage(`Switched mode to ${newMode} (Lobby: ${required} players). New match formed!`);
+      playMatchFoundSound();
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  // Simulate +10s queue wait time aging (triggers starvation re-ranking)
   const handleSimulateTick = () => {
-    const updated = players.map((p) => ({
+    const tickQueue = activeQueue.map((p) => ({
       ...p,
       wait: p.wait + 10,
     }));
-    setPlayers(updated);
-    generateMatch(updated, mode);
+    const tickPlayers = players.map((p) => ({
+      ...p,
+      wait: p.wait + 10,
+    }));
+    setActiveQueue(tickQueue);
+    setPlayers(tickPlayers);
+    setToastMessage(`⏱️ Simulated +10s queue wait time! Priority weights recalculated across all ${tickQueue.length} waiting players.`);
   };
 
+  // Update master player pool (e.g. from Presets or Add Player form)
   const handleUpdatePlayers = (newPool: Player[]) => {
     setPlayers(newPool);
-    generateMatch(newPool, mode);
+    setActiveQueue(newPool);
+    try {
+      const freshServers = getDefaultServers();
+      const res = createSingleMatch(newPool, mode, freshServers, "proposed_greedy_graph");
+      setCurrentMatch(res.match);
+      setActiveQueue(res.remainingPool);
+      setServers(freshServers);
+      setToastMessage(`Loaded new player pool (${newPool.length} players). Formed initial match!`);
+      playMatchFoundSound();
+    } catch (e) {
+      console.error(e);
+    }
   };
 
   return (
@@ -71,15 +174,15 @@ export default function Index() {
       <AppSidebar
         activeView={activeView}
         onSelectView={(v) => setActiveView(v)}
-        queueCount={players.length}
+        queueCount={activeQueue.length}
       />
 
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col min-w-0">
         <AppHeader
           currentMode={mode}
-          onModeChange={(m) => setMode(m)}
-          queueSize={players.length}
+          onModeChange={handleModeChange}
+          queueSize={activeQueue.length}
           onSimulateTick={handleSimulateTick}
           activeViewTitle={VIEW_TITLES[activeView]}
         />
@@ -89,20 +192,30 @@ export default function Index() {
             <MatchmakingHub
               currentMatch={currentMatch}
               matchHistory={matchHistory}
-              onGenerateNextMatch={() => generateMatch(players, mode)}
+              onGenerateNextMatch={handleGenerateNextMatch}
+              onResetQueue={handleResetQueue}
               onClearHistory={() => setMatchHistory([])}
               mode={mode}
               servers={servers}
-              queueCount={players.length}
+              queueCount={activeQueue.length}
+              isGenerating={isGenerating}
+              toastMessage={toastMessage}
             />
           )}
 
           {activeView === "batch" && (
-            <BatchMatchmaker players={players} mode={mode} servers={servers} />
+            <BatchMatchmaker
+              players={players}
+              mode={mode}
+              servers={servers}
+            />
           )}
 
           {activeView === "players" && (
-            <PlayerPoolManager players={players} onUpdatePlayers={handleUpdatePlayers} />
+            <PlayerPoolManager
+              players={players}
+              onUpdatePlayers={handleUpdatePlayers}
+            />
           )}
 
           {activeView === "greedy" && (
@@ -117,11 +230,16 @@ export default function Index() {
           )}
 
           {activeView === "priority" && (
-            <PriorityQueueLab players={players} onUpdatePlayers={handleUpdatePlayers} />
+            <PriorityQueueLab
+              players={activeQueue.length > 0 ? activeQueue : players}
+              onUpdatePlayers={handleUpdatePlayers}
+            />
           )}
 
           {activeView === "graph" && (
-            <GraphCompatibilityLab players={players} />
+            <GraphCompatibilityLab
+              players={activeQueue.length >= 8 ? activeQueue : players}
+            />
           )}
 
           {activeView === "sorting" && (
@@ -137,8 +255,8 @@ export default function Index() {
 
         <footer className="border-t border-slate-900 bg-slate-950 py-4 px-6 text-center text-xs text-slate-500 font-mono">
           <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2">
-            <span>Faculty of Technology, University of Delhi • CSE-B2</span>
-            <span>Guide: <strong className="text-cyan-400">Dr. Juhi Jain</strong> | Priyanshu Kumar & Thulasi Harsha Vardhan</span>
+            <span>MULTI-MATCH™ • 4-Stage Algorithmic Matchmaking Engine</span>
+            <span>Fair & Fast • Greedy Partitioning • Binary Max-Heap • Graph Clustering</span>
           </div>
         </footer>
       </div>

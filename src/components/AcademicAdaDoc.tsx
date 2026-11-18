@@ -4,58 +4,46 @@ import { BookOpenIcon, AwardIcon, ShieldIcon, ActivityIcon, CheckCircleIcon } fr
 export const AcademicAdaDoc: React.FC = () => {
   return (
     <div className="space-y-8 max-w-5xl mx-auto">
-      {/* Official Project Synopsis Academic Header Banner */}
-      <div className="bg-gradient-to-b from-slate-900 via-slate-950 to-slate-900 border-2 border-indigo-500/40 rounded-3xl p-6 sm:p-8 shadow-2xl relative overflow-hidden">
-        <div className="absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute bottom-0 left-0 -ml-16 -mb-16 w-64 h-64 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none" />
+      {/* Official System Architecture Documentation Header Banner */}
+      <div className="bg-gradient-to-b from-slate-900 via-slate-950 to-slate-900 border-2 border-cyan-500/40 rounded-3xl p-6 sm:p-8 shadow-2xl relative overflow-hidden">
+        <div className="absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute bottom-0 left-0 -ml-16 -mb-16 w-64 h-64 bg-fuchsia-500/10 rounded-full blur-3xl pointer-events-none" />
 
-        <div className="text-center space-y-2 pb-6 border-b border-slate-800">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-300 font-mono text-xs font-semibold">
-            FACULTY OF TECHNOLOGY • UNIVERSITY OF DELHI
+        <div className="flex flex-col sm:flex-row items-center gap-6 pb-6 border-b border-slate-800">
+          <img
+            src="/logo.jpg"
+            alt="MULTI-MATCH"
+            className="w-24 h-24 rounded-2xl object-cover border-2 border-cyan-500/50 shadow-2xl shadow-cyan-500/30 shrink-0"
+          />
+          <div className="space-y-1 text-center sm:text-left">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-950/80 border border-cyan-500/40 text-cyan-300 font-mono text-xs font-semibold">
+              4-STAGE ALGORITHMIC ENGINE • SPECIFICATIONS
+            </div>
+            <h1 className="text-2xl sm:text-3xl font-black text-white tracking-tight uppercase">
+              MULTI-MATCH SYSTEM ARCHITECTURE
+            </h1>
+            <p className="text-xs text-slate-400 font-mono">
+              Fair & Fast Multiplayer Game Matchmaking & Team Balancing Engine
+            </p>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-black text-white tracking-tight">
-            ANALYSIS AND DESIGN OF ALGORITHMS
-          </h1>
-          <h2 className="text-sm sm:text-base font-bold text-cyan-400 tracking-wider uppercase font-mono">
-            Project Synopsis Documentation
-          </h2>
-          <p className="text-xs text-slate-400 max-w-xl mx-auto">
-            New Delhi - 110007 • B.Tech Computer Science and Engineering • 3rd Semester
-          </p>
         </div>
 
-        {/* Authors & Guide Information */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-6 text-xs">
+        {/* Feature Highlights Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-6 text-xs font-mono">
           <div className="bg-slate-900/80 border border-slate-800 p-4 rounded-2xl">
-            <span className="text-[10px] font-mono uppercase text-slate-400 font-bold block mb-2">
-              Submitted By:
-            </span>
-            <div className="space-y-2">
-              <div>
-                <strong className="text-slate-100 text-sm block">Thulasi Venkata Harsha Vardhan</strong>
-                <span className="font-mono text-cyan-300">Roll No: 25293916109</span>
-              </div>
-              <div className="pt-2 border-t border-slate-800">
-                <strong className="text-slate-100 text-sm block">Priyanshu Kumar</strong>
-                <span className="font-mono text-fuchsia-300">Roll No: 25293916077</span>
-              </div>
-              <div className="pt-2 text-slate-400">
-                Section: <strong className="text-emerald-400">CSE-B2</strong> • 3rd Semester
-              </div>
-            </div>
+            <span className="text-[10px] text-cyan-400 font-bold block mb-1">STAGE 1 & 2</span>
+            <strong className="text-white text-sm block">Heap & Graph Network</strong>
+            <span className="text-slate-400 text-xs">Anti-starvation queue + compatibility clustering</span>
           </div>
-
-          <div className="bg-slate-900/80 border border-slate-800 p-4 rounded-2xl flex flex-col justify-between">
-            <div>
-              <span className="text-[10px] font-mono uppercase text-slate-400 font-bold block mb-2">
-                Submitted To:
-              </span>
-              <strong className="text-amber-200 text-base block font-bold">Dr. Juhi Jain</strong>
-              <span className="text-slate-400 block mt-1">Faculty of Technology, University of Delhi</span>
-            </div>
-            <div className="pt-4 border-t border-slate-800 mt-4 text-[11px] text-slate-400">
-              Project Title: <strong className="text-white">Multiplayer Game Matchmaking and Team Balancing System</strong>
-            </div>
+          <div className="bg-slate-900/80 border border-slate-800 p-4 rounded-2xl">
+            <span className="text-[10px] text-fuchsia-400 font-bold block mb-1">STAGE 3</span>
+            <strong className="text-white text-sm block">Greedy Team Balancer</strong>
+            <span className="text-slate-400 text-xs">LPT Heuristic with Graham's 7/6 bound</span>
+          </div>
+          <div className="bg-slate-900/80 border border-slate-800 p-4 rounded-2xl">
+            <span className="text-[10px] text-emerald-400 font-bold block mb-1">STAGE 4</span>
+            <strong className="text-white text-sm block">Dijkstra Edge Routing</strong>
+            <span className="text-slate-400 text-xs">Low-latency regional edge node allocation</span>
           </div>
         </div>
       </div>

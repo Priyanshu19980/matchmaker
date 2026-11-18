@@ -20,6 +20,10 @@ export const StrategyComparisonLab: React.FC<StrategyComparisonLabProps> = ({ pl
     }, 150);
   };
 
+  React.useEffect(() => {
+    setBenchmarks(compareMatchmakingStrategies(players, mode));
+  }, [players, mode]);
+
   const proposed = benchmarks[0];
   const random = benchmarks[1];
 
@@ -34,7 +38,7 @@ export const StrategyComparisonLab: React.FC<StrategyComparisonLabProps> = ({ pl
         <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4 pb-4 border-b border-slate-800">
           <div>
             <span className="text-[10px] font-mono uppercase tracking-widest text-cyan-400 font-bold block">
-              ADA Synopsis • Section 2, 7 & 8
+              Strategy Comparative Benchmarks
             </span>
             <h2 className="text-xl sm:text-2xl font-black text-white tracking-tight uppercase">
               Matchmaking Strategy Comparative Benchmark

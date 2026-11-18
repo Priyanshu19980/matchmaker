@@ -45,7 +45,8 @@ export const PriorityQueueLab: React.FC<PriorityQueueLabProps> = ({ players, onU
     setSelectedNodeIdx(0);
   };
 
-  const selectedPlayer = heapArray[selectedNodeIdx];
+  const safeIdx = selectedNodeIdx < heapArray.length ? selectedNodeIdx : 0;
+  const selectedPlayer = heapArray[safeIdx];
 
   return (
     <div className="space-y-6">
@@ -54,7 +55,7 @@ export const PriorityQueueLab: React.FC<PriorityQueueLabProps> = ({ players, onU
         <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4 pb-4 border-b border-slate-800">
           <div>
             <span className="text-[10px] font-mono uppercase tracking-widest text-cyan-400 font-bold block">
-              ADA Synopsis • Section 5.B
+              Stage 1: Binary Max-Heap Queue
             </span>
             <h2 className="text-xl sm:text-2xl font-black text-white tracking-tight uppercase">
               Binary Max-Heap Priority Queue & Anti-Starvation Engine

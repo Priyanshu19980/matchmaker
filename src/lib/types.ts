@@ -1,7 +1,6 @@
 // ============================================================================
-// ANALYSIS AND DESIGN OF ALGORITHMS - PROJECT SYNOPSIS DATA CONTRACTS
-// Faculty of Technology, University of Delhi
-// Dr. Juhi Jain | Thulasi Venkata Harsha Vardhan & Priyanshu Kumar
+// MULTI-MATCH: 4-STAGE ALGORITHMIC MATCHMAKING ENGINE DATA CONTRACTS
+// Fair & Fast Multiplayer Team Balancing System
 // ============================================================================
 
 export type Region = "India" | "Asia" | "EU" | "NA";

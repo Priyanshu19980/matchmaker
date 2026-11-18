@@ -84,13 +84,13 @@ export const PlayerPoolManager: React.FC<PlayerPoolManagerProps> = ({ players, o
         <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4 pb-4 border-b border-slate-800">
           <div>
             <span className="text-[10px] font-mono uppercase tracking-widest text-cyan-400 font-bold block">
-              ADA Synopsis • Section 6
+              Player Data Schema & Queue Storage
             </span>
             <h2 className="text-xl sm:text-2xl font-black text-white tracking-tight uppercase">
               Player Pool & Datasets Platform
             </h2>
             <p className="text-xs text-slate-300 mt-1 max-w-2xl leading-relaxed">
-              Maintains the complete 9-attribute schema specified in Section 6: Player ID (P102), Skill Rating (MMR), Latency (Ping), Region, Role, Game Mode, Waiting Time, Win Rate, and Experience Level.
+              Maintains the complete 9-attribute schema: Player ID (P102), Skill Rating (MMR), Latency (Ping), Region, Role, Game Mode, Waiting Time, Win Rate, and Experience Level.
             </p>
           </div>
 
@@ -99,7 +99,7 @@ export const PlayerPoolManager: React.FC<PlayerPoolManagerProps> = ({ players, o
               onClick={() => onUpdatePlayers(getDUCollegiateDataset())}
               className="px-3 py-1.5 rounded-xl bg-cyan-950 border border-cyan-800 text-cyan-300 hover:bg-cyan-900 text-xs font-mono font-bold transition-all"
             >
-              DU Campus Preset (32 Players)
+              Standard Ranked Preset (32 Players)
             </button>
             <button
               onClick={() => onUpdatePlayers(getGlobalLadderDataset())}
@@ -197,7 +197,7 @@ export const PlayerPoolManager: React.FC<PlayerPoolManagerProps> = ({ players, o
                 type="text"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                placeholder="e.g. Priyanshu_K"
+                placeholder="e.g. Shadow_Ace"
                 className="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white focus:outline-none focus:border-cyan-500"
               />
             </div>

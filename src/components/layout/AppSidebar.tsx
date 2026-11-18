@@ -56,19 +56,19 @@ export const AppSidebar: React.FC<AppSidebarProps> = ({
       ],
     },
     {
-      heading: "ADA ALGORITHM LABS",
+      heading: "ALGORITHM LABS",
       items: [
-        { id: "greedy", label: "Greedy Balancer Lab", icon: ZapIcon, sub: "Section 5.A" },
-        { id: "priority", label: "Priority Queue (Heap)", icon: ActivityIcon, sub: "Section 5.B" },
-        { id: "graph", label: "Graph Compatibility Lab", icon: ShieldIcon, sub: "Section 5.C" },
-        { id: "sorting", label: "Sorting Benchmark Lab", icon: ServerIcon, sub: "Section 5.D" },
-        { id: "compare", label: "Strategy Comparison", icon: AwardIcon, sub: "Section 8" },
+        { id: "greedy", label: "Greedy Balancer Lab", icon: ZapIcon, sub: "Stage 3" },
+        { id: "priority", label: "Priority Queue (Heap)", icon: ActivityIcon, sub: "Stage 1" },
+        { id: "graph", label: "Graph Compatibility Lab", icon: ShieldIcon, sub: "Stage 2" },
+        { id: "sorting", label: "Sorting Benchmark Lab", icon: ServerIcon, sub: "Bench" },
+        { id: "compare", label: "Strategy Comparison", icon: AwardIcon, sub: "Benchmark" },
       ],
     },
     {
-      heading: "ACADEMIC & SYNOPSIS",
+      heading: "SPECIFICATIONS",
       items: [
-        { id: "docs", label: "ADA Synopsis & Docs", icon: BookOpenIcon, sub: "DU FT • Juhi Jain" },
+        { id: "docs", label: "Engine Architecture", icon: BookOpenIcon, sub: "Docs & Proofs" },
       ],
     },
   ];
@@ -76,20 +76,20 @@ export const AppSidebar: React.FC<AppSidebarProps> = ({
   return (
     <aside className="w-64 bg-slate-950 border-r border-slate-800 flex flex-col justify-between shrink-0 h-screen sticky top-0 overflow-y-auto">
       <div>
-        {/* Brand Header */}
+        {/* Brand Header with Uploaded Logo */}
         <div className="p-4 border-b border-slate-800/80 bg-slate-900/40">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-cyan-500 to-indigo-600 p-0.5 shadow-md shadow-cyan-500/20 flex items-center justify-center">
-              <div className="w-full h-full bg-slate-950 rounded-[10px] flex items-center justify-center font-black text-cyan-400 text-sm">
-                DU
-              </div>
-            </div>
+            <img
+              src="/logo.jpg"
+              alt="MULTI-MATCH Logo"
+              className="w-12 h-12 rounded-xl object-cover border border-cyan-500/40 shadow-lg shadow-cyan-500/20"
+            />
             <div>
-              <h1 className="font-bold text-slate-100 text-sm tracking-wide flex items-center gap-1.5">
-                MATCHMAKER <span className="text-cyan-400 font-mono text-xs">ADA</span>
+              <h1 className="font-black text-white text-base tracking-wider flex items-center gap-1.5">
+                MULTI-MATCH
               </h1>
-              <p className="text-[10px] text-slate-400 font-mono">
-                Faculty of Technology, DU
+              <p className="text-[10px] text-cyan-400 font-mono font-semibold uppercase tracking-tight">
+                Fair & Fast Engine
               </p>
             </div>
           </div>
@@ -139,17 +139,21 @@ export const AppSidebar: React.FC<AppSidebarProps> = ({
         </div>
       </div>
 
-      {/* Authors Academic Footer */}
-      <div className="p-3 border-t border-slate-800/80 bg-slate-900/30 text-[11px] space-y-1">
-        <div className="text-[10px] font-mono uppercase text-slate-500 font-bold">
-          ADA Project Contributors
+      {/* Modern Platform Footer */}
+      <div className="p-3.5 border-t border-slate-800/80 bg-slate-900/40 text-[11px] space-y-1.5">
+        <div className="flex items-center justify-between">
+          <span className="text-[10px] font-mono uppercase text-cyan-400 font-bold tracking-wider">
+            MULTI-MATCH v2.4
+          </span>
+          <span className="text-[9px] font-mono px-1.5 py-0.2 rounded bg-emerald-950 text-emerald-300 border border-emerald-800">
+            STABLE
+          </span>
         </div>
-        <div className="text-slate-200 font-medium truncate">
-          Priyanshu Kumar • Harsha Vardhan
+        <div className="text-slate-300 font-medium text-xs">
+          4-Stage Algorithmic Engine
         </div>
-        <div className="text-slate-400 text-[10px] font-mono flex items-center justify-between">
-          <span>CSE-B2 • 3rd Sem</span>
-          <span className="text-cyan-400 font-semibold">Dr. Juhi Jain</span>
+        <div className="text-slate-500 text-[10px] font-mono">
+          Greedy • Heap • Graph • Dijkstra
         </div>
       </div>
     </aside>

@@ -26,6 +26,10 @@ export const BatchMatchmaker: React.FC<BatchMatchmakerProps> = ({ players, mode,
     setSelectedMatch(res.matches[0] || null);
   };
 
+  React.useEffect(() => {
+    handleRunBatch();
+  }, [players, mode]);
+
   if (!batchResult) return null;
 
   const matches = batchResult.matches;

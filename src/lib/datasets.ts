@@ -8,8 +8,8 @@ export function getExperience(rating: number): ExperienceLevel {
 }
 
 const INDIAN_COLLEGE_PLAYERS = [
-  { name: "Priyanshu_K", rating: 1820, ping: 16, role: "Rusher", wait: 42, winRate: 64 },
-  { name: "Harsha_V", rating: 1790, ping: 18, role: "Sniper", wait: 38, winRate: 61 },
+  { name: "Viper_Ace", rating: 1820, ping: 16, role: "Rusher", wait: 42, winRate: 64 },
+  { name: "Shadow_Apex", rating: 1790, ping: 18, role: "Sniper", wait: 38, winRate: 61 },
   { name: "Aarav_Sharma", rating: 1540, ping: 22, role: "Support", wait: 15, winRate: 54 },
   { name: "Rohan_Verma", rating: 1510, ping: 24, role: "Tank", wait: 55, winRate: 52 },
   { name: "Ishaan_Gupta", rating: 1640, ping: 19, role: "Rusher", wait: 28, winRate: 58 },
@@ -97,3 +97,49 @@ export function getStarvationStressDataset(): Player[] {
     wait: idx < 6 ? 95 + idx * 15 : 8 + (idx * 3),
   }));
 }
+
+export function generateFreshQueue(count = 32, mode: import("./types").GameMode = "4v4"): Player[] {
+  const firstNames = [
+    "Aarav", "Kabir", "Vihaan", "Aditya", "Rohan", "Ishaan", "Arjun", "Dev",
+    "Ritvik", "Tanmay", "Siddharth", "Zoya", "Ananya", "Diya", "Shreya", "Kavya",
+    "Tara", "Neha", "Bhavya", "Harshita", "Aakash", "Deepak", "Gaurav", "Chirag",
+    "Kunal", "Lalit", "Mayank", "Nikhil", "Pranav", "Rahul", "Varun", "Yash"
+  ];
+  const lastNames = [
+    "Sharma", "Verma", "Gupta", "Mehta", "Rao", "Patel", "Singh", "Joshi",
+    "Nair", "Bose", "Reddy", "Malhotra", "Iyer", "Tiwari", "Kapoor", "Chopra",
+    "Roy", "Deshmukh", "Saxena", "Kulkarni", "Khan", "Yadav", "Jain", "Sen",
+    "Pandey", "Mishra", "Goyal", "Bahl", "Kumar", "Aggarwal", "Bhatia", "Chauhan"
+  ];
+  const regions: Region[] = ["India", "Asia", "EU", "NA"];
+  const roles: PlayerRole[] = ["Rusher", "Sniper", "Support", "Tank", "Flex"];
+
+  return Array.from({ length: count }, (_, i) => {
+    const numId = 300 + Math.floor(Math.random() * 800);
+    const fn = firstNames[Math.floor(Math.random() * firstNames.length)];
+    const ln = lastNames[Math.floor(Math.random() * lastNames.length)];
+    const role = roles[Math.floor(Math.random() * roles.length)];
+    const region = regions[Math.random() < 0.65 ? 0 : Math.floor(Math.random() * regions.length)];
+    const rating = Math.floor(1300 + Math.random() * 750);
+    const ping = region === "India" ? Math.floor(15 + Math.random() * 18) : Math.floor(35 + Math.random() * 50);
+    const wait = Math.floor(8 + Math.random() * 65);
+    const winRate = Math.floor(45 + Math.random() * 25);
+
+    return {
+      id: `P${numId}`,
+      numId,
+      name: `${fn}_${ln}`,
+      rating,
+      ping,
+      region,
+      role,
+      gameMode: mode,
+      wait,
+      winRate,
+      experienceLevel: getExperience(rating),
+    };
+  });
+}
+
+export const getStandardRankedDataset = getDUCollegiateDataset;
+

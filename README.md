@@ -1,18 +1,13 @@
-# Multiplayer Game Matchmaking and Team Balancing System
+# MULTI-MATCH: 4-Stage Algorithmic Matchmaking Engine
 
-**Course:** Analysis and Design of Algorithms (ADA)  
-**Institution:** Faculty of Technology, University of Delhi, New Delhi - 110007  
-**Department:** Computer Science and Engineering (CSE-B2, 3rd Semester)  
-**Submitted to:** Dr. Juhi Jain  
-**Submitted by:**
-- Thulasi Venkata Harsha Vardhan (25293916109)
-- Priyanshu Kumar (25293916077)
+**Fair & Fast Multiplayer Team Balancing Platform**  
+*Greedy Optimization • Binary Max-Heap • Graph Compatibility • Dijkstra Routing*
 
 ---
 
 ## 🏛️ System Architecture
 
-This project is a sophisticated, full-featured **Analysis and Design of Algorithms (ADA)** matchmaking and team balancing platform. Rather than toy simulations, it implements real mathematical data structures, graph clustering, dynamic priority queue scheduling, and greedy partitioning algorithms:
+MULTI-MATCH is a sophisticated, full-featured algorithmic matchmaking and team balancing platform. It implements real mathematical data structures, graph clustering, dynamic priority queue scheduling, and greedy partitioning algorithms:
 
 ```
                                   [ Player Pool / Datasets ]
